@@ -1,0 +1,26 @@
+---
+version: "2"
+services:
+  cachet:
+    build: "."
+    depends_on:
+      - postgres
+    environment:
+      - DB_DRIVER=pgsql
+      - DB_HOST=postgres
+      - DB_DATABASE=postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    ports:
+      - 80:80
+    links:
+      - "postgres:postgres"
+    volumes:
+      - /var/www
+  postgres:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    image: "postgres:9.5"
+    volumes:
+      - /var/lib/postgresql/data
