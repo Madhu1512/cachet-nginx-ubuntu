@@ -53,6 +53,10 @@ RUN chmod +x /sbin/entrypoint.sh
 RUN adduser www-data sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
 WORKDIR /var/www/html/
 USER www-data
 
@@ -75,8 +79,9 @@ RUN wget https://github.com/cachethq/Cachet/archive/${cachet_ver}.tar.gz && \
 
 COPY conf/.env.docker /var/www/html/.env
 
-VOLUME /var/www
-EXPOSE 80
+EXPOSE 80/TCP
+
+VOLUME ["/var/www"]
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 CMD ["start"]
